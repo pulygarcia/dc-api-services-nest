@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, MinLength } from 'class-validator';
 
 export class CreateServiceDto {
     @IsNotEmpty()
@@ -7,7 +7,6 @@ export class CreateServiceDto {
     serviceName: string;
 
     @IsNotEmpty()
-    @IsString()
-    @MinLength(2) 
-    artist: string;
+    @IsNumber()
+    pricePerHour: number;
 }
