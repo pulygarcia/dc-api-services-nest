@@ -9,4 +9,4 @@ import { Service, ServiceSchema } from '../schemas/service.schema';
   controllers: [ServicesController],
   providers: [StudioServices],
 })
-export class servicesModule {}
+export class ServicesModule {}

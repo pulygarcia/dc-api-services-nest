@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import {servicesModule} from './services/services.module';
+import {ServicesModule} from './services/services.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -9,7 +10,8 @@ import { MongooseModule } from '@nestjs/mongoose';
       isGlobal: true, // allow config module in all the app
     }),
     MongooseModule.forRoot(process.env.MONGO_URI), 
-    servicesModule
+    ServicesModule, 
+    AuthModule
   ]
 })
 export class AppModule {}
