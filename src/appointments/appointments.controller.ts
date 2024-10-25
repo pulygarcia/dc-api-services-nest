@@ -1,26 +1,25 @@
-import { Controller, Post, Body,HttpException, HttpStatus, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseGuards, Req, Param } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
-import {CreateAppointmentDto} from '../appointments/dto/create-appointment-dto'
+import { CreateAppointmentDto } from './dto/create-appointment-dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('appointments')
 export class AppointmentsController {
-    constructor(private readonly appointmentsServices: AppointmentsService){}
+    constructor(private readonly appointmentsService: AppointmentsService) {}
 
     @UseGuards(AuthGuard)
     @Post()
-     async createAppointment(@Body() appointment:CreateAppointmentDto, @Req() req:any) {
-        try {
-            const created = await this.appointmentsServices.create(appointment, req.user);
-            
-            return {
-              message: 'Appointment has been created successfully',
-              data: created,
-            };
-          
-          } catch (error) {
-            console.log(error);
-            throw new HttpException('Invalid data provided', HttpStatus.BAD_REQUEST);
-          }
+    async createAppointment(@Body() appointment: CreateAppointmentDto, @Req() req: any) {
+        const created = await this.appointmentsService.create(appointment, req.user);
+        return {
+            message: 'Appointment has been created successfully',
+            data: created,
+        };
+    }
+
+    @Get(':id')
+    async getAppointmentById(@Param('id') id: string) {
+        const appointment = await this.appointmentsService.getByID(id);
+        return { data: appointment };
     }
 }

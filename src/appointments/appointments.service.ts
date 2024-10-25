@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Appointment } from 'src/schemas/appointment.schema';
@@ -10,12 +10,25 @@ export class AppointmentsService {
         @InjectModel(Appointment.name) private appointmentModel: Model<Appointment>,
     ){}
 
-    async create(appointment:CreateAppointmentDto, user: any){
-        const createdAppointment = new this.appointmentModel(appointment);
-        createdAppointment.user = user.sub;
+    async create(appointment: CreateAppointmentDto, user: any) {
+        try {
+            const createdAppointment = new this.appointmentModel(appointment);
+            createdAppointment.user = user.sub;
+            await createdAppointment.save();
+            
+            return createdAppointment;
+            
+        } catch (error) {
+            //Specific errors here if necessary
+            throw new BadRequestException('Invalid data provided');
+        }
+    }
 
-        await createdAppointment.save();
-
-        return createdAppointment;
+    async getByID(id: string) {
+        const appointment = await this.appointmentModel.findById(id);
+        if (!appointment) {
+            throw new NotFoundException(`Appointment with ID ${id} not found`);
+        }
+        return appointment;
     }
 }
